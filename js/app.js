@@ -47,36 +47,37 @@ function showLoginMessage(aText)
 
 window.addEventListener('DOMContentLoaded', function() {
 
-  document.getElementById('auwifi').style.display = 'none';
-
   wispr = new WISPr;
 
   document.getElementById('username').value = localStorage.getItem('username');
   document.getElementById('password').value = localStorage.getItem('password');
 
   document.getElementById('login').removeAttribute('disabled');
-  document.getElementById('logout').setAttribute('disabled', '1');
+  document.getElementById('logoff').setAttribute('disabled', '1');
 
-  document.getElementById('register').addEventListener('click', () => {
-    // navigator.mozWifiManager.macAddress
-    var auauth = new AuOneAuthByBrowser;
-    auauth.registerMacAddress(document.getElementById('macaddress').value);
-  });
   document.getElementById('login').addEventListener('click', () => {
       document.getElementById('messages').innerHTML = '';
 
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
+    if (document.getElementById('save').checked) {
+      localStorage.setItem('username', username);
+      localStorage.setItem('password', password);
+    } else {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+    }
+
     localStorage.setItem('username', username);
     localStorage.setItem('password', password);
 
     var promise = wispr.login(username, password);
-    document.getElementById('login').setAttribute('disabled', '1');
-    document.getElementById('logout').setAttribute('disabled', '1');
     showLoginProgressDialog();
+    document.getElementById('login').setAttribute('disabled', '1');
+    document.getElementById('logoff').setAttribute('disabled', '1');
     promise.then(function() {
-      document.getElementById('logout').removeAttribute('disabled');
+      document.getElementById('logoff').removeAttribute('disabled');
       closeLoginProgressDialog();
       showLoginMessage('Login Successful');
     }, function() {
@@ -85,9 +86,9 @@ window.addEventListener('DOMContentLoaded', function() {
       showLoginMessage('Login Failed');
     });
   });
-  document.getElemeion = ntById('logout').addEventListener('click', function() {
+  document.getElementById('logoff').addEventListener('click', function() {
     wispr.logout();
     document.getElementById('login').removeAttribute('disabled');
-    document.getElementById('logout').setAttribute('disabled', '1');
+    document.getElementById('logoff').setAttribute('disabled', '1');
   });
 });

@@ -11,10 +11,10 @@
     <link rel="stylesheet" href="style/input_areas.css">
     <link rel="stylesheet" href="style/progress_activity.css">
     <link rel="stylesheet" href="style/status.css">
+    <link rel="stylesheet" href="style/switches.css">
 
     <link rel="stylesheet" href="style/app.css">
 
-    <script type="text/javascript" src="js/AuOneAuthByBrowser.js" defer></script>
     <script type="text/javascript" src="js/WISPr.js" defer></script>
 
     <script type="text/javascript" src="js/app.js" defer></script>
@@ -23,14 +23,11 @@
     <section id="main">
       <p><input type="text" placeholder="Username" id="username"/></p>
       <p><input type="password" placeholder="Password" id="password"/></p>
+      <p><label class="pack-checkbox"><input type="checkbox" id="save" checked><span></span></label>Save information</p>
       <p><button id="login">Login</button>
-      <button id="logout">Logout</button></p>
+      <button id="logoff">Logoff</button></p>
       <div id="messages"></div>
       <div id="dialogs"></div>
-    </section>
-    <section id="auwifi">
-      <p><input type="text" placeholder="MAC Address" id="macaddress"></input></p>
-      <p><button id="register">Register Machine</button></p>
     </section>
   </body>
 </html>
