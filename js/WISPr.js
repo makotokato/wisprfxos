@@ -75,6 +75,18 @@ WISPr.prototype = {
   },
 
   logout: function() {
+    if (this._logoffURL) {
+      var xhr = new XMLHttpRequest({mozSystem: true});
+      xhr.open('GET', this.logoffURL, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readState == 4) {
+          if (xhr.statue == 200) {
+            this._logoffURL = null;
+          }
+        }
+      }
+      xhr.send();
+    }
   },
 
   abort: function() {
@@ -95,8 +107,9 @@ WISPr.prototype = {
     xhrLogin.onreadystatechange = function() {
       if (xhrLogin.readyState == 4) {
         // au WIFI returns invalid XML format
-        var result = xhrLogin.responseText.replace(/<WISPAccessGatewayParam[^>]*>/,
-                                                   '<WISPAccessGatewayParam>', 'm');
+        var result =
+          xhrLogin.responseText.replace(/<WISPAccessGatewayParam[^>]*>/,
+                                        '<WISPAccessGatewayParam>', 'm');
 
         // <WISPAccessGatewayParam>
         //  <AuthenticationReply>
@@ -119,6 +132,12 @@ WISPr.prototype = {
             return;
           } else if (responseCode == 50) {
             aResolve();
+            self._xhr = null;
+            self._logoffURL =
+              xmlDoc.evaluate(
+                '/WISPAccessGatewayParam/AuthenticationReply/LogoffURL',
+                xmlDoc, null, XPathResult.ANY_TYPE,
+                null).iteratorNext().textContent;
             return;
           }
         } catch (e) {
@@ -151,14 +170,11 @@ WISPr.prototype = {
     var self = this;
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
-        // <PollNotification>
-        //  <ResponseCode>...</ResponseCode>
-        //  <LoginResultsURL>...</LoginResultsURL>
-        // </PollNotification>
         try {
           var xmlDoc = self._getWISPrXML(xhr.responseText);
-          var responseCode = self._getResponseCode(xmlDoc,
-                                                   '/WISPAccessGatewayParam/AuthenticationReply');
+          var responseCode =
+            self._getResponseCode(xmlDoc,
+                                  '/WISPAccessGatewayParam/AuthenticationReply');
           console.log('ResponseCode: ' + responseCode);
           if (responseCode == 201) {
             var delay = 10;
@@ -173,6 +189,12 @@ WISPr.prototype = {
 
           if (responseCode == 50) {
             aResolve();
+            self._xhr = null;
+            self._logoffURL =
+              xmlDoc.evaluate(
+                '/WISPAccessGatewayParam/AuthenticationReply/LogoffURL',
+                xmlDoc, null, XPathResult.ANY_TYPE,
+                null).iteratorNext().textContent;
             return;
           }
         } catch (e) {
