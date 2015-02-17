@@ -1,5 +1,5 @@
 {
-  "version": "0.1",
+  "version": "0.1.1",
   "name": "WISPr Login",
   "description": "Login to WISPr service such as au/KDDI WiFi",
   "launch_path": "/index.html",
